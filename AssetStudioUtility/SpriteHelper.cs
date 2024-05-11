@@ -98,8 +98,6 @@ namespace AssetStudio
                                 mask.Mutate(x => x.Fill(options, SixLabors.ImageSharp.Color.Red, path));
                                 var bursh = new ImageBrush(mask);
                                 spriteImage.Mutate(x => x.Fill(graphicsOptions, bursh));
-                                spriteImage.Mutate(x => x.Flip(FlipMode.Vertical));
-                                return spriteImage;
                             }
                         }
                         catch
@@ -110,6 +108,13 @@ namespace AssetStudio
 
                     //Rectangle
                     spriteImage.Mutate(x => x.Flip(FlipMode.Vertical));
+
+                    //还原图片原尺寸
+                    {
+                        var restoreImage = new Image<Bgra32>((int)m_Sprite.m_Rect.width, (int)m_Sprite.m_Rect.height, SixLabors.ImageSharp.Color.Transparent);
+                        restoreImage.Mutate(x => x.DrawImage(spriteImage, new Point((int)Math.Round(textureRectOffset.X), (int)Math.Round(textureRectOffset.Y)), 1));
+                        spriteImage = restoreImage;
+                    }
                     return spriteImage;
                 }
             }
